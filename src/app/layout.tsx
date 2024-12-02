@@ -1,37 +1,39 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import { Manrope, DM_Sans } from "next/font/google";
-import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
-import { ThemeProvider } from "@/components/theme-provider"
 
-const manrope = DM_Sans({ subsets: ["latin"] });
+import type { Metadata } from 'next'
+import localFont from 'next/font/local'
+import { Manrope, DM_Sans } from 'next/font/google'
+import { ClerkProvider } from '@clerk/nextjs'
+
+import './globals.css'
+import { ThemeProvider } from '@/components/theme-provider'
+
+const manrope = DM_Sans({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: "Loume",
-  description: "Record and share videos with anyone.",
-};
+  title: 'Opal',
+  description: 'Share AI powered videos with your friends.',
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <ClerkProvider>
-
-    <html lang="en">
-      <body className={`${manrope.className} bg-[#171717]`}> 
-        <ThemeProvider
+      <html lang="en">
+        <body className={`${manrope.className} bg-[#171717]`}>
+          <ThemeProvider
             attribute="class"
-            defaultTheme="system"
-            enableSystem
+            defaultTheme="dark"
             disableTransitionOnChange
           >
-            {children}
+            
+                {children}
+                
           </ThemeProvider>
-          </body>
-    </html>
+        </body>
+      </html>
     </ClerkProvider>
-  );
+  )
 }
