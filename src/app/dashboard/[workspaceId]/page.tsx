@@ -5,11 +5,12 @@ import React from 'react'
 type Props = {}
 
 const page = (props: Props) => {
-    const params  = useParams()
-    console.log(params)
+   
   return (
     <div>
-        {JSON.stringify(params)}
+        {/* {JSON.stringify(params)} */}
+
+        hiiiii
     </div>
   )
 }
