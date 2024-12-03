@@ -1,15 +1,14 @@
-"use server";
-import { db } from "@/lib/prisma";
-import { currentUser } from "@clerk/nextjs/server";
+import { client } from "@/lib/prisma"
+import { currentUser } from "@clerk/nextjs/server"
 
 export const onAuthenticateUser = async () => {
   try {
-    const user = await currentUser();
+    const user = await currentUser()
     if (!user) {
-      return { status: 403 };
+      return { status: 403 }
     }
 
-    const userExist = await db.user.findUnique({
+    const userExist = await client.user.findUnique({
       where: {
         clerkid: user.id,
       },
@@ -22,12 +21,20 @@ export const onAuthenticateUser = async () => {
           },
         },
       },
-    });
+    })
     if (userExist) {
-      return { status: 200, user: userExist };
+      return { status: 200, user: userExist }
     }
+    const emailExists = await client.user.findUnique({
+      where: {
+        email: user.emailAddresses[0].emailAddress,
+      },
+    })
 
-    const newUser = await db.user.create({
+    if (emailExists) {
+      return { status: 409, message: "Email already in use" }
+    }
+    const newUser = await client.user.create({
       data: {
         clerkid: user.id,
         email: user.emailAddresses[0].emailAddress,
@@ -43,7 +50,7 @@ export const onAuthenticateUser = async () => {
         workspace: {
           create: {
             name: `${user.firstName}'s Workspace`,
-            type: "PERSONAL",
+            type: 'PERSONAL',
           },
         },
       },
@@ -61,13 +68,13 @@ export const onAuthenticateUser = async () => {
           },
         },
       },
-    });
+    })
     if (newUser) {
-      return { status: 201, user: newUser };
+      return { status: 201, user: newUser }
     }
-    return { status: 400 };
+    return { status: 400 }
   } catch (error) {
-    // console.log("🔴 ERROR", error);
-    return { status: 500 };
+    console.log('🔴 ERROR', error)
+    return { status: 500 }
   }
-};
+}
