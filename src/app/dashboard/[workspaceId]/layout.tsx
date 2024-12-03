@@ -1,5 +1,6 @@
-import { onAuthenticateUser } from '@/actions/user';
-import { verifyAccessToWorkspace } from '@/actions/workspace';
+import { getNotifications, onAuthenticateUser } from '@/actions/user';
+import { getWorkSpaces, verifyAccessToWorkspace } from '@/actions/workspace';
+import { QueryClient } from '@tanstack/react-query';
 import { redirect } from 'next/navigation';
 import React from 'react'
 
@@ -15,6 +16,29 @@ const layout =async ({params: {workspaceId} , children}: Props) => {
     if(!auth.user?.workspace.length ) return redirect('/auth/sign-up')
 
     const hasAccess = await verifyAccessToWorkspace(workspaceId)
+
+    if (hasAccess.status !== 200) {
+      redirect(`/dashboard/${auth.user?.workspace[0].id}`)
+    }
+
+
+    if (!hasAccess.data?.workspace) {
+      return null
+    }
+
+
+    const query = new QueryClient
+
+
+    await query.prefetchQuery({
+      queryKey: ['user-workspaces'],
+      queryFn: () => getWorkSpaces(),
+    })
+  
+    await query.prefetchQuery({
+      queryKey: ['user-notifications'],
+      queryFn: () => getNotifications(),
+    })
 
   return (
     <div>layout</div>
