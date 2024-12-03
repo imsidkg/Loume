@@ -1,20 +1,18 @@
 
 import type { Metadata } from 'next'
-import localFont from 'next/font/local'
-import { Manrope, DM_Sans } from 'next/font/google'
+
+import {  DM_Sans } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Toaster } from "@/components/ui/toaster"
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query'
+
 
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
+import ReactQueryProvider from '@/lib/ReactQueryProvider'
 
 const manrope = DM_Sans({ subsets: ['latin'] })
 
-const queryClient = new QueryClient()
+
 
 export const metadata: Metadata = {
   title: 'Opal',
@@ -36,11 +34,13 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             
-          <QueryClientProvider client={queryClient}>
+          <ReactQueryProvider>
+            
                 {children}
+          </ReactQueryProvider>
                 
           <Toaster />
-          </QueryClientProvider>
+          
           </ThemeProvider>
         </body>
       </html>

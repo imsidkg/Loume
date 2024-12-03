@@ -4,7 +4,7 @@ type Props = {}
 
 const Sidebar = (props: Props) => {
   return (
-    <div>index</div>
+    <div>Sidebar</div>
   )
 }
 
