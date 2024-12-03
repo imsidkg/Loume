@@ -1,6 +1,7 @@
 import { getNotifications, onAuthenticateUser } from '@/actions/user';
 import { getWorkSpaces, verifyAccessToWorkspace } from '@/actions/workspace';
-import { QueryClient } from '@tanstack/react-query';
+import Sidebar from '@/components/global/sidebar';
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 import { redirect } from 'next/navigation';
 import React from 'react'
 
@@ -41,7 +42,11 @@ const layout =async ({params: {workspaceId} , children}: Props) => {
     })
 
   return (
-    <div>layout</div>
+   <HydrationBoundary state={dehydrate(query)}>
+    <div>
+      <Sidebar/>
+    </div>
+   </HydrationBoundary>
   )
 }
 
