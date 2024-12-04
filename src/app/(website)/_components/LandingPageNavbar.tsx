@@ -17,7 +17,7 @@ const LandingPageNavbar = (props: Props) => {
         width={40}
         height={40}
       />
-      Opal
+      Loume
     </div>
     <div className="hidden gap-x-10 items-center lg:flex">
       <Link
