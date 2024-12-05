@@ -1,3 +1,4 @@
+'use client'
 import { Enabled, QueryFunction, QueryKey, useQuery } from "@tanstack/react-query";
 
 export const userQueryData  = ( queryKey : QueryKey , queryFn : QueryFunction , enabled? : Enabled) => {
