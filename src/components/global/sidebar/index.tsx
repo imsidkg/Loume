@@ -13,6 +13,8 @@ import { usePathname, useRouter } from 'next/navigation'
 import { PlusCircle } from 'lucide-react'
 import { MENU_ITEMS } from '@/constants'
 import { Separator } from '@/components/ui/separator'
+import { getNotifications } from '@/actions/user'
+import { Notification } from '@/types/Notification'
 
 type Props = {
    activeWorkspaceId : string
@@ -37,7 +39,7 @@ const Sidebar = ({activeWorkspaceId}: Props) => {
     getNotifications
   )
 
-  // const {data : count} = notifications as Notication  
+  const {data : count} = notifications as Notification  
 
   return (
     <div className="bg-[#111111] flex-none relative p-4 h-full w-[250px] flex flex-col gap-4 items-center overflow-hidden">
