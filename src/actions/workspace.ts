@@ -77,6 +77,7 @@ export const getWorkSpaces = async () => {
         },
       },
     });
+    console.log('the ws is' ,workspaces)
 
     if (workspaces) {
       return {
@@ -86,7 +87,7 @@ export const getWorkSpaces = async () => {
     }
   } catch (error) {
     return {
-      status: 500,
+      error
     };
   }
 };
