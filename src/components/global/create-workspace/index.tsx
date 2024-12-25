@@ -41,7 +41,7 @@ const CreateWorkspace = (props: Props) => {
           </Button>
         }
       >
-        dfsdfsdfasdf
+        
         <WorkspaceForm />
       </Modal>
     )
