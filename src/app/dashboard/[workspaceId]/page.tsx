@@ -1,13 +1,15 @@
-'use client'
-import { useParams } from 'next/navigation'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import React from 'react'
 import CreateWorkspace from '@/components/global/create-workspace'
+import CreateFolders from '@/components/global/create-folders'
+import Folders from '@/components/global/folders'
 
-type Props = {}
+type Props = {
+  params: { workspaceId: string }
+}
 
-const page = (props: Props) => {
-   
+const page =async ({params}: Props) => {
+    const {workspaceId} = await params
   return (
     <div>
         <Tabs
@@ -31,12 +33,12 @@ const page = (props: Props) => {
             </TabsList>
             <div className="flex gap-x-3">
               <CreateWorkspace />
-              {/* <CreateForlders workspaceId={workspaceId} /> */}
+              <CreateFolders workspaceId={workspaceId} />
             </div>
           </div>
           <section className="py-9">
             <TabsContent value="videos">
-              {/* <Folders workspaceId={workspaceId} /> */}
+              <Folders workspaceId={workspaceId} />
             </TabsContent>
           </section>
         </Tabs>
