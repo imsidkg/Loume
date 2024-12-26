@@ -94,28 +94,31 @@ export const getWorkSpaces = async () => {
 
 
 export const getWorkspaceFolders = async (workSpaceId: string) => {
-  console.log('folders is######################################################################### ')
-    try {
-      const isFolders = await client.folder.findMany({
-        where: {
-          workSpaceId,
-        },
-        include: {
-          _count: {
-            select: {
-              videos: true,
-            },
+  console.log(workSpaceId)
+  try {
+    console.log('workspacae id si', workSpaceId)
+    const isFolders = await client.folder.findMany({
+      where: {
+        workSpaceId,
+      },
+      include: {
+        _count: {
+          select: {
+            videos: true,
           },
         },
-      })
-      if (isFolders && isFolders.length > 0) {
-        return { status: 200, data: isFolders }
-      }
-      return { status: 404, data: [] }
-    } catch (error) {
-      return { status: 403, data: [] }
+      },
+    })
+    console.log('isFolders exist', isFolders)
+    if (isFolders && isFolders.length > 0) {
+      return { status: 200, data: isFolders }
     }
+    return { status: 404, data: [] }
+  } catch (error) {
+    return { status: 403, data: [] }
   }
+}
+
   
   export const getAllUserVideos = async (workSpaceId: string) => {
     try {

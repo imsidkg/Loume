@@ -50,7 +50,7 @@ const Sidebar = ({activeWorkspaceId}: Props) => {
           width={40}
           alt="logo"
         />
-        <p className="text-2xl">Opal</p>
+        <p className="text-2xl">Loume</p>
       </div>
       <Select
         defaultValue={activeWorkspaceId}

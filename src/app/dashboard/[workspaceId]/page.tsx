@@ -11,6 +11,7 @@ type Props = {
 
 const page =async ({params}: Props) => {
     const {workspaceId} = await params
+    
   return (
     <div>
         <Tabs

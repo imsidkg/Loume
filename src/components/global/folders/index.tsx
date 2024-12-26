@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 import React from "react";
 import Folder from "./folder";
+import { useQuery } from "@tanstack/react-query";
 
 type Props = {
   workspaceId: string;
@@ -27,11 +28,13 @@ export type FoldersProps = {
 };
 
 const Folders = ({ workspaceId }: Props) => {
-  const { data, isFetched } = useQueryData(['workspace-folders'], () =>
-    getWorkspaceFolders(workspaceId)
-  )
-
-  console.log(data);
+  
+  const {data , isFetched , error} = useQuery({
+    queryKey : ['workspace-folders'],
+    queryFn : () => getWorkspaceFolders(workspaceId)
+  })
+  console.log('data :', data)
+  console.log('error is' , error)
 
   const { latestVariables } = useMutationDataState(["create-folder"]);
   const { status, data: folders } = data as FoldersProps;
