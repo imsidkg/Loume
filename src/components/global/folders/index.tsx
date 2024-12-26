@@ -6,7 +6,9 @@ type Props = {
 
 const Folders = ({workspaceId}: Props) => {
   return (
-    <div>Folders</div>
+    <div>
+        
+    </div>
   )
 }
 
