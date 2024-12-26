@@ -4,6 +4,7 @@ import CreateWorkspace from '@/components/global/create-workspace'
 import CreateFolders from '@/components/global/create-folders'
 import Folders from '@/components/global/folders'
 
+
 type Props = {
   params: { workspaceId: string }
 }

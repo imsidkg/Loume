@@ -6,7 +6,7 @@ type Props = {};
 
 const page = async (props: Props) => {
   const auth = await onAuthenticateUser()
-  console.log(auth)
+  // console.log(auth)
   if (auth.status === 200 || auth.status === 201 || auth.status === 409)
     return redirect(`/dashboard/${auth.user?.workspace[0].id}`)
 

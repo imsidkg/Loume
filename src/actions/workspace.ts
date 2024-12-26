@@ -77,7 +77,7 @@ export const getWorkSpaces = async () => {
         },
       },
     });
-    console.log('the ws is' ,workspaces)
+    // console.log('the ws is' ,workspaces)
 
     if (workspaces) {
       return {
@@ -94,6 +94,7 @@ export const getWorkSpaces = async () => {
 
 
 export const getWorkspaceFolders = async (workSpaceId: string) => {
+  console.log('folders is######################################################################### ')
     try {
       const isFolders = await client.folder.findMany({
         where: {

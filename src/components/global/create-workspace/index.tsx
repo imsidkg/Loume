@@ -23,7 +23,7 @@ const CreateWorkspace = (props: Props) => {
     }
   }
 
-  console.log(plan)
+  // console.log(plan)
 
   if (plan.subscription?.plan === 'FREE') {
     return <></>

@@ -5,6 +5,7 @@ type Props = {
 }
 
 const CreateFolders = ({workspaceId}: Props) => {
+  
   return (
     <div>CreateFolders</div>
   )
