@@ -94,9 +94,7 @@ export const getWorkSpaces = async () => {
 
 
 export const getWorkspaceFolders = async (workSpaceId: string) => {
-  console.log(workSpaceId)
   try {
-    console.log('workspacae id si', workSpaceId)
     const isFolders = await client.folder.findMany({
       where: {
         workSpaceId,
@@ -109,7 +107,6 @@ export const getWorkspaceFolders = async (workSpaceId: string) => {
         },
       },
     })
-    console.log('isFolders exist', isFolders)
     if (isFolders && isFolders.length > 0) {
       return { status: 200, data: isFolders }
     }
@@ -118,7 +115,6 @@ export const getWorkspaceFolders = async (workSpaceId: string) => {
     return { status: 403, data: [] }
   }
 }
-
   
   export const getAllUserVideos = async (workSpaceId: string) => {
     try {

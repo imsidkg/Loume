@@ -31,8 +31,16 @@ const Folders = ({ workspaceId }: Props) => {
   
   const {data , isFetched , error} = useQuery({
     queryKey : ['workspace-folders'],
-    queryFn : () => getWorkspaceFolders(workspaceId)
+    queryFn : () => {
+      console.log("getWorkspaceFolders is being invoked with workspaceId:", workspaceId);
+      return getWorkspaceFolders(workspaceId);
+    }
+  
+    
   })
+
+  
+  
   console.log('data :', data)
   console.log('error is' , error)
 
@@ -82,3 +90,4 @@ const Folders = ({ workspaceId }: Props) => {
   );
 };
 export default Folders;
+
