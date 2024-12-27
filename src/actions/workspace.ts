@@ -95,6 +95,8 @@ export const getWorkSpaces = async () => {
 
 export const getWorkspaceFolders = async (workSpaceId: string) => {
   try {
+    console.log('inside try')
+    console.log('inside fn',workSpaceId)
     const isFolders = await client.folder.findMany({
       where: {
         workSpaceId,
@@ -107,6 +109,7 @@ export const getWorkspaceFolders = async (workSpaceId: string) => {
         },
       },
     })
+    console.log(isFolders)
     if (isFolders && isFolders.length > 0) {
       return { status: 200, data: isFolders }
     }
@@ -223,3 +226,24 @@ export const getWorkspaceFolders = async (workSpaceId: string) => {
         return {status : 500 , data : 'Oops! Something went wrong'}
     }
   }
+
+  export const createFolder = async (workspaceId: string) => {
+    try {
+      const isNewFolder = await client.workSpace.update({
+        where: {
+          id: workspaceId,
+        },
+        data: {
+          folders: {
+            create: { name: 'Untitled' },
+          },
+        },
+      })
+      if (isNewFolder) {
+        return { status: 200, message: 'New Folder Created' }
+      }
+    } catch (error) {
+      return { status: 500, message: 'Oppse something went wrong' }
+    }
+  }
+  

@@ -10,11 +10,15 @@ import Search from '../search'
 import SidebarItem from './sidebar-item'
 import WorkspacePlaceholder from './workplace-placeholder'
 import { usePathname, useRouter } from 'next/navigation'
-import { PlusCircle } from 'lucide-react'
+import { Menu, PlusCircle } from 'lucide-react'
 import { MENU_ITEMS } from '@/constants'
 import { Separator } from '@/components/ui/separator'
 import { getNotifications } from '@/actions/user'
 import { Notification } from '@/types/Notification'
+import InfoBar from '../info-bar'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import GlobalCard from '../global-card'
+import { Button } from '@/components/ui/button'
 
 type Props = {
    activeWorkspaceId : string
@@ -41,7 +45,7 @@ const Sidebar = ({activeWorkspaceId}: Props) => {
 
   const {data : count} = notifications as Notification  
 
-  return (
+  const SidebarSection = (
     <div className="bg-[#111111] flex-none relative p-4 h-full w-[250px] flex flex-col gap-4 items-center overflow-hidden">
       <div className="bg-[#111111] p-4 flex gap-2 justify-center items-center mb-4 absolute top-0 left-0 right-0 ">
         <Image
@@ -50,7 +54,7 @@ const Sidebar = ({activeWorkspaceId}: Props) => {
           width={40}
           alt="logo"
         />
-        <p className="text-2xl">Loume</p>
+        <p className="text-2xl">Opal</p>
       </div>
       <Select
         defaultValue={activeWorkspaceId}
@@ -62,7 +66,7 @@ const Sidebar = ({activeWorkspaceId}: Props) => {
         <SelectContent className="bg-[#111111] backdrop-blur-xl">
           <SelectGroup>
             <SelectLabel>Workspaces</SelectLabel>
-            <SelectSeparator />
+            <Separator />
             {workspace.workspace.map((workspace) => (
               <SelectItem
                 value={workspace.id}
@@ -176,8 +180,41 @@ const Sidebar = ({activeWorkspaceId}: Props) => {
             ))}
         </ul>
       </nav>
-      
-      
+      <Separator className="w-4/5" />
+      {/* {workspace.subscription?.plan === 'FREE' && (
+        <GlobalCard
+          title="Upgrade to Pro"
+          description=" Unlock AI features like transcription, AI summary, and more."
+          // footer={<PaymentButton />}
+        />
+      )} */}
+    </div>
+  )
+  return (
+    <div className="full">
+      <InfoBar />
+      <div className="md:hidden fixed my-4">
+        <Sheet>
+          <SheetTrigger
+            asChild
+            className="ml-2"
+          >
+            <Button
+              variant={'ghost'}
+              className="mt-[2px]"
+            >
+              <Menu />
+            </Button>
+          </SheetTrigger>
+          <SheetContent
+            side={'left'}
+            className="p-0 w-fit h-full"
+          >
+            {SidebarSection}
+          </SheetContent>
+        </Sheet>
+      </div>
+      <div className="md:block hidden h-full">{SidebarSection}</div>
     </div>
   )
 }

@@ -1,3 +1,5 @@
+'use client'
+import { useCreateFolders } from '@/hooks/useCreateFolders';
 import React from 'react'
 
 type Props = {
@@ -5,7 +7,7 @@ type Props = {
 }
 
 const CreateFolders = ({workspaceId}: Props) => {
-  
+    const {onCreateNewFolder} = useCreateFolders(workspaceId);
   return (
     <div>CreateFolders</div>
   )

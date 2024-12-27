@@ -1,40 +1,17 @@
-'use client'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import React from 'react'
 import CreateWorkspace from '@/components/global/create-workspace'
 import CreateFolders from '@/components/global/create-folders'
 import Folders from '@/components/global/folders'
 import { getWorkspaceFolders } from '@/actions/workspace'
-import { useQuery } from '@tanstack/react-query'
-import { use } from 'react'
 
 
 type Props = {
-  params: Promise<{ workspaceId: string }>
+  params: { workspaceId: string }
 }
 
-const page = ({params}: Props) => {
-    // const {workspaceId} = await params
-    const workspace = use(params)
-    const workspaceId = workspace.workspaceId
-    console.log("sdfssssssssssssssssss",workspaceId)
-// console.log(params.workspaceId)
-   
-
-
-    const {data , isFetched , error} = useQuery({
-      queryKey : ['workspace-folders'],
-      queryFn : () => {
-        console.log("getWorkspaceFolders is being invoked with workspaceId:", workspaceId);
-        return getWorkspaceFolders(workspaceId);
-      }
-    
-      
-    })
-  
-    
-    
-    console.log('data :', data)
+const page =async ({params}: Props) => {
+    const {workspaceId} = await params
     
   return (
     <div>

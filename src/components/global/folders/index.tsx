@@ -29,15 +29,10 @@ export type FoldersProps = {
 
 const Folders = ({ workspaceId }: Props) => {
   
-  const {data , isFetched , error} = useQuery({
-    queryKey : ['workspace-folders'],
-    queryFn : () => {
-      console.log("getWorkspaceFolders is being invoked with workspaceId:", workspaceId);
-      return getWorkspaceFolders(workspaceId);
-    }
-  
-    
-  })
+  const { data, isFetched,error } = useQueryData(['workspace-folders'], () =>
+    getWorkspaceFolders(workspaceId)
+  )
+
 
   
   
