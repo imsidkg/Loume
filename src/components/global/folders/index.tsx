@@ -36,9 +36,6 @@ const Folders = ({ workspaceId }: Props) => {
 
   const {status , data:folders} = (data ?? {status : 404 , data:[]}) as FoldersProps
 
-//  const result = data as FoldersProps
-//  const status = result?.status ?? 404;
-//  const folders = result?.data ?? [];
   return (
     <div className="flex flex-col gap-4" suppressHydrationWarning>
       <div className="flex items-center justify-between">
