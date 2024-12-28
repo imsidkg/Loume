@@ -87,16 +87,15 @@ export const getWorkSpaces = async () => {
     }
   } catch (error) {
     return {
-      error
+      error,
     };
   }
 };
 
-
 export const getWorkspaceFolders = async (workSpaceId: string) => {
   try {
-    console.log('inside try')
-    console.log('inside fn',workSpaceId)
+    console.log("inside try");
+    console.log("inside fn", workSpaceId);
     const isFolders = await client.folder.findMany({
       where: {
         workSpaceId,
@@ -108,142 +107,173 @@ export const getWorkspaceFolders = async (workSpaceId: string) => {
           },
         },
       },
-    })
-    console.log(isFolders)
+    });
+    console.log(isFolders);
     if (isFolders && isFolders.length > 0) {
-      return { status: 200, data: isFolders }
+      return { status: 200, data: isFolders };
     }
-    return { status: 404, data: [] }
+    return { status: 404, data: [] };
   } catch (error) {
-    return { status: 403, data: [] }
+    return { status: 403, data: [] };
   }
-}
-  
-  export const getAllUserVideos = async (workSpaceId: string) => {
-    try {
-      const user = await currentUser()
-      if (!user) return { status: 404 }
-      const videos = await client.video.findMany({
-        where: {
-          OR: [{ workSpaceId }, { folderId: workSpaceId }],
-        },
-        select: {
-          id: true,
-          title: true,
-          createdAt: true,
-          source: true,
-          processing: true,
-          Folder: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          User: {
-            select: {
-              firstname: true,
-              lastname: true,
-              image: true,
-            },
+};
+
+export const getAllUserVideos = async (workSpaceId: string) => {
+  try {
+    const user = await currentUser();
+    if (!user) return { status: 404 };
+    const videos = await client.video.findMany({
+      where: {
+        OR: [{ workSpaceId }, { folderId: workSpaceId }],
+      },
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+        source: true,
+        processing: true,
+        Folder: {
+          select: {
+            id: true,
+            name: true,
           },
         },
-        orderBy: {
-          createdAt: 'asc',
+        User: {
+          select: {
+            firstname: true,
+            lastname: true,
+            image: true,
+          },
         },
-      })
-  
-      if (videos && videos.length > 0) {
-        return { status: 200, data: videos }
-      }
-  
-      return { status: 404 }
-    } catch (error) {
-      return { status: 400 }
+      },
+      orderBy: {
+        createdAt: "asc",
+      },
+    });
+
+    if (videos && videos.length > 0) {
+      return { status: 200, data: videos };
     }
+
+    return { status: 404 };
+  } catch (error) {
+    return { status: 400 };
   }
+};
 
+export const createWorkspace = async (name: string) => {
+  try {
+    const user = await currentUser();
+    if (!user) return { status: 404 };
+    const authorized = await client.user.findUnique({
+      where: {
+        clerkid: user.id,
+      },
+      select: {
+        subscription: {
+          select: {
+            plan: true,
+          },
+        },
+      },
+    });
 
-  export const createWorkspace = async (name: string) => {
-    try {
-      const user = await currentUser()
-      if (!user) return { status: 404 }
-      const authorized = await client.user.findUnique({
+    if (authorized?.subscription?.plan === "PRO") {
+      const workspace = await client.user.update({
         where: {
           clerkid: user.id,
         },
-        select: {
-          subscription: {
-            select: {
-              plan: true,
-            },
-          },
-        },
-      })
-  
-      if (authorized?.subscription?.plan === 'PRO') {
-        const workspace = await client.user.update({
-          where: {
-            clerkid: user.id,
-          },
-          data: {
-            workspace: {
-              create: {
-                name,
-                type: 'PUBLIC',
-              },
-            },
-          },
-        })
-        if (workspace) {
-          return { status: 201, data: 'Workspace Created' }
-        }
-      }
-      return {
-        status: 401,
-        data: 'You are not authorized to create a workspace.',
-      }
-    } catch (error) {
-      return { status: 400 }
-    }
-  }
-
-  export const renameFolders = async(folderId:string, name:string) => {
-    try {
-        const folder = await client.folder.update({
-          where :{
-            id : folderId
-          },
-          data :{
-            name
-          },
-          
-        })
-        if(folder ) {
-          return {status : 200 , data : 'Folder renamed'}
-        }
-        return {status : 400 , data : 'Folder does not exist'}
-    } catch (error) {
-        return {status : 500 , data : 'Oops! Something went wrong'}
-    }
-  }
-
-  export const createFolder = async (workspaceId: string) => {
-    try {
-      const isNewFolder = await client.workSpace.update({
-        where: {
-          id: workspaceId,
-        },
         data: {
-          folders: {
-            create: { name: 'Untitled' },
+          workspace: {
+            create: {
+              name,
+              type: "PUBLIC",
+            },
           },
         },
-      })
-      if (isNewFolder) {
-        return { status: 200, message: 'New Folder Created' }
+      });
+      if (workspace) {
+        return { status: 201, data: "Workspace Created" };
       }
-    } catch (error) {
-      return { status: 500, message: 'Oppse something went wrong' }
     }
+    return {
+      status: 401,
+      data: "You are not authorized to create a workspace.",
+    };
+  } catch (error) {
+    return { status: 400 };
   }
-  
+};
+
+export const renameFolders = async (folderId: string, name: string) => {
+  try {
+    const folder = await client.folder.update({
+      where: {
+        id: folderId,
+      },
+      data: {
+        name,
+      },
+    });
+    if (folder) {
+      return { status: 200, data: "Folder renamed" };
+    }
+    return { status: 400, data: "Folder does not exist" };
+  } catch (error) {
+    return { status: 500, data: "Oops! Something went wrong" };
+  }
+};
+
+export const createFolder = async (workspaceId: string) => {
+  try {
+    const isNewFolder = await client.workSpace.update({
+      where: {
+        id: workspaceId,
+      },
+      data: {
+        folders: {
+          create: { name: "Untitled" },
+        },
+      },
+    });
+    if (isNewFolder) {
+      return { status: 200, message: "New Folder Created" };
+    }
+  } catch (error) {
+    return { status: 500, message: "Oppse something went wrong" };
+  }
+};
+
+export const getFolderInfo = async (folderId: string) => {
+  try {
+    const folder  = await client.folder.findUnique({
+      where : {
+        id : folderId
+      },
+      select: {
+        name: true,
+        _count: {
+          select: {
+            videos: true,
+          },
+        },
+      },
+    })
+
+    if(folder) {
+      return {
+        status : 200, 
+        data : folder
+      }
+    }
+    return {
+      status: 400,
+      data: null,
+    }
+  } catch(error) {
+    return {
+      status : 500,
+    data : null
+  }
+    }
+};
