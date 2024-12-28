@@ -1,13 +1,13 @@
 "use client";
-import { getWorkspaceFolders } from "@/actions/workspace";
+
 import FolderDuotone from "@/components/icons/folder-duotone";
-import { useMutationDataState } from "@/hooks/useMutationData";
-import { useQueryData } from "@/hooks/useQueryData";
 import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 import React from "react";
 import Folder from "./folder";
-import { useQuery } from "@tanstack/react-query";
+import { useQueryData } from "@/hooks/useQueryData";
+import { getWorkspaceFolders } from "@/actions/workspace";
+import { useMutationDataState } from "@/hooks/useMutationData";
 
 type Props = {
   workspaceId: string;
@@ -15,38 +15,36 @@ type Props = {
 
 export type FoldersProps = {
   status: number;
-  data: ({
+  data: Array<{
     _count: {
       videos: number;
     };
-  } & {
     id: string;
     name: string;
     createdAt: Date;
     workSpaceId: string | null;
-  })[];
+  }>;
 };
 
 const Folders = ({ workspaceId }: Props) => {
-  
-  const { data, isFetched,error } = useQueryData(['workspace-folders'], () =>
+  // Fetch data
+  const { data, isFetched, error } = useQueryData(["workspace-folder"], () =>
     getWorkspaceFolders(workspaceId)
-  )
+  );
 
+  const { latestVariables } = useMutationDataState(["create-folders"]);
 
-  
-  
-  console.log('data :', data)
-  console.log('error is' , error)
+  const {status , data:folders} = (data ?? {status : 404 , data:[]}) as FoldersProps
 
-  const { latestVariables } = useMutationDataState(["create-folder"]);
-  const { status, data: folders } = data as FoldersProps;
+//  const result = data as FoldersProps
+//  const status = result?.status ?? 404;
+//  const folders = result?.data ?? [];
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center  justify-between">
+    <div className="flex flex-col gap-4" suppressHydrationWarning>
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <FolderDuotone />
-          <h2 className="text-[#BDBDBD] text-xl"> Folders</h2>
+          <h2 className="text-[#BDBDBD] text-xl">Folders</h2>
         </div>
         <div className="flex items-center gap-2">
           <p className="text-[#BDBDBD]">See all</p>
@@ -59,7 +57,11 @@ const Folders = ({ workspaceId }: Props) => {
           "flex items-center gap-4 overflow-x-auto w-full"
         )}
       >
-        {status !== 200 ? (
+        {!isFetched ? (
+          <p className="text-neutral-300">Loading folders...</p>
+        ) : error ? (
+          <p className="text-red-500">Error fetching folders</p>
+        ) : status !== 200 || folders.length === 0 ? (
           <p className="text-neutral-300">No folders in workspace</p>
         ) : (
           <>
@@ -70,7 +72,7 @@ const Folders = ({ workspaceId }: Props) => {
                 optimistic
               />
             )}
-            {folders.map((folder) => (
+            {folders.map((folder: FoldersProps["data"][number]) => (
               <Folder
                 name={folder.name}
                 count={folder._count.videos}
@@ -84,5 +86,5 @@ const Folders = ({ workspaceId }: Props) => {
     </div>
   );
 };
-export default Folders;
 
+export default Folders;
