@@ -1,6 +1,7 @@
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { useMoveVideos } from "@/hooks/useMoveFolders";
 import React from "react";
 
 type Props = {
@@ -16,6 +17,15 @@ const ChangeVideoLocation = ({
   currentFolderName,
   currentWorkspace,
 }: Props) => {
+
+  const {onFormSubmit,
+    errors,
+    register,
+    isPending,
+    folders,
+    workspaces,
+    isFetching,
+    isFolders,} = useMoveVideos(videoId , currentWorkspace!)
   return <form>
     <div>
         <h2>

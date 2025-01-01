@@ -1,5 +1,8 @@
 import React from 'react'
 import Loader from '../loader'
+import ChangeVideoLocation from '@/components/forms/change-video-location'
+import Modal from '../Modal'
+import { Move } from 'lucide-react'
 
 type Props = {
     videoId : string
@@ -8,15 +11,31 @@ type Props = {
     currentFolderName? : string
 }
 
-const VideoCardMenu = (props: Props) => {
+const VideoCardMenu = ({  videoId,
+  currentFolder,
+  currentFolderName,
+  currentWorkspace,}: Props) => {
   return (
-   <Loader>
-    <div>
-        <div>
-          
-        </div>
-    </div>
-   </Loader>
+    <Modal
+      className="flex items-center cursor-pointer gap-x-2"
+      title="Move to new Workspace/Folder"
+      description="This action cannot be undone. This will permanently delete your
+  account and remove your data from our servers."
+      trigger={
+        <Move
+          size={20}
+          fill="#4f4f4f"
+          className="text-[#4f4f4f]"
+        />
+      }
+    >
+      <ChangeVideoLocation
+        currentFolder={currentFolder}
+        currentWorkspace={currentWorkspace}
+        videoId={videoId}
+        currentFolderName={currentFolderName}
+      />
+    </Modal>
   )
 }
 
