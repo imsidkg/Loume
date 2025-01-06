@@ -7,6 +7,7 @@ import React from "react";
 import RichLink from "../rich-link";
 import CopyLink from "../copy-link";
 import { truncateString } from "@/lib/utils";
+import TabMenu from "../../tabs";
 
 type Props = {
   videoId: string;
