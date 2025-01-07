@@ -8,6 +8,8 @@ import RichLink from "../rich-link";
 import CopyLink from "../copy-link";
 import { truncateString } from "@/lib/utils";
 import TabMenu from "../../tabs";
+import AiTools from "../../ai-tools";
+import VideoTranscript from "../../video-transcript";
 
 type Props = {
   videoId: string;
