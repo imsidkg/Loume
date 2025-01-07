@@ -1,3 +1,4 @@
+
 import { getAllUserVideos } from '@/actions/workspace'
 import { useQueryData } from '@/hooks/useQueryData'
 import { VideosProps } from '@/types'
@@ -8,12 +9,12 @@ import { cn } from '@/lib/utils'
 
 type Props = {
   folderId : string
-  videoKey : string
+  videosKey : string
   workspaceId: string
 }
 
-const Videos = ({folderId ,videoKey , workspaceId}: Props) => {
-  const {data: videoData} = useQueryData([videoKey] ,  () => getAllUserVideos(folderId))
+const Videos = ({folderId ,videosKey , workspaceId}: Props) => {
+  const {data: videoData} = useQueryData([videosKey] ,  () => getAllUserVideos(folderId))
 
   const {status : videosStatus , data : videos} = (videoData?? {status : 404 , data : []}) as VideosProps
 

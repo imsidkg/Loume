@@ -8,6 +8,7 @@ import Folder from "./folder";
 import { useQueryData } from "@/hooks/useQueryData";
 import { getWorkspaceFolders } from "@/actions/workspace";
 import { useMutationDataState } from "@/hooks/useMutationData";
+import Videos from "../videos";
 
 type Props = {
   workspaceId: string;
@@ -80,6 +81,11 @@ const Folders = ({ workspaceId }: Props) => {
           </>
         )}
       </div>
+      <Videos
+        workspaceId={workspaceId}
+        folderId={workspaceId}
+        videosKey="user-videos"
+      />
     </div>
   );
 };
