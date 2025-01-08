@@ -347,3 +347,22 @@ export const getPreviewVideo = async (videoId: string) => {
     return { status: 400 }
   }
 }
+
+
+export const getPaymentVideo = async () => {
+  try {
+    const user = await currentUser();
+    if(!user) {
+      return {status : 404}
+
+    }
+      const payment = await client.user.findUnique({
+        where : {
+            
+      })
+    }
+  }
+  catch {
+
+  }
+}
