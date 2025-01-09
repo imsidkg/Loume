@@ -349,20 +349,35 @@ export const getPreviewVideo = async (videoId: string) => {
 }
 
 
-export const getPaymentVideo = async () => {
-  try {
-    const user = await currentUser();
-    if(!user) {
-      return {status : 404}
-
+export const getPaymentInfo =async () => {
+  try{
+    const user = await currentUser() ;
+    if(!user) return {status : 404} 
+    const payment = await client.user.findUnique({
+      where : {
+        id  : user.id
+      },
+      select : {
+        subscription : {
+          select : {
+            plan : true
+          }
+        }
+      }
+    })
+    if(payment)  {
+      return  {
+        data : payment,
+        status : 200
+      }
     }
-      const payment = await client.user.findUnique({
-        where : {
-            
-      })
+    else {
+      return {
+        status : 404
+      }
     }
   }
   catch {
-
+    return { status: 400 }
   }
 }
