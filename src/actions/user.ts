@@ -143,3 +143,42 @@ export const searchUsers = async (query: string) => {
     return { status: 500, data: undefined }
   }
 }
+
+
+export const enableFirstView = async(state :boolean) => {
+  try {
+    const user = await currentUser();
+    if(!user) return {status : 400}
+    const view = await client.user.update({
+      where : {
+        clerkid: user.id
+      } , 
+      data : {
+        firstView : state
+      }
+    })
+    if(view) return {status : 400 , data : 'Settings Updated'}
+
+  } catch (error) {
+      return {status : 400}
+  }
+}
+
+export const getFirstView = async() => {
+  try {
+    const user = await currentUser();
+    if(!user) return {status : 400}
+    const userData  = await client.user.findUnique( {
+      where : {
+        clerkid : user.id
+      },
+      select : {
+        firstView: true
+      }
+    })
+
+    if (userData ) return { status : 200 , data : userData.firstView}
+  } catch (error) {
+    
+  }
+}
