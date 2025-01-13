@@ -182,3 +182,27 @@ export const getFirstView = async() => {
     
   }
 }
+
+
+export const getVideoComments = async (Id: string) => {
+  try {
+    const comments = await client.comment.findMany({
+      where: {
+        OR: [{ videoId: Id }, { commentId: Id }],
+        commentId: null,
+      },
+      include: {
+        reply: {
+          include: {
+            User: true,
+          },
+        },
+        User: true,
+      },
+    })
+
+    return { status: 200, data: comments }
+  } catch (error) {
+    return { status: 400 }
+  }
+}
