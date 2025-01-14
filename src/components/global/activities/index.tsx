@@ -1,4 +1,5 @@
 import { getVideoComments } from "@/actions/user";
+import CommenForm from "@/components/forms/comment-form";
 import { useQueryData } from "@/hooks/useQueryData";
 import { VideoCommentProps } from "@/types";
 import { TabsContent } from "@radix-ui/react-tabs";

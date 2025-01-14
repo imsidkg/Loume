@@ -28,6 +28,10 @@ const VideoPreview = ({ videoId }: Props) => {
   } = (data ?? { status: 404, author: false, video: [] }) as VideoProps;
 
   if(status !== 200) router.push("/")
+
+    const daysAgo = Math.floor(
+      (new Date().getTime() - video.createdAt.getTime()) / (24 * 60 * 60 * 1000)
+    )
    return (
     <div className="grid grid-cols-1 xl:grid-cols-3 lg:py-10 overflow-y-auto gap-5">
       <div className="flex flex-col lg:col-span-2 gap-y-10">
