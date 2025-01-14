@@ -10,6 +10,7 @@ import { truncateString } from "@/lib/utils";
 import TabMenu from "../../tabs";
 import AiTools from "../../ai-tools";
 import VideoTranscript from "../../video-transcript";
+import Activities from "../../activities";
 
 type Props = {
   videoId: string;
