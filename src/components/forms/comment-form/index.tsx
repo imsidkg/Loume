@@ -12,7 +12,7 @@ type Props = {
   close?: () => void;
 };
 
-const CommenForm = ({ author, videoId, close, commentId }: Props) => {
+const CommentForm = ({ author, videoId, close, commentId }: Props) => {
   const { register, errors, isPending, onFormSubmit } = useVideoComment(
     videoId,
     commentId
@@ -42,4 +42,4 @@ const CommenForm = ({ author, videoId, close, commentId }: Props) => {
   </form>;
 };
 
-export default CommenForm;
+export default CommentForm;

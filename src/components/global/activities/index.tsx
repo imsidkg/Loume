@@ -1,9 +1,10 @@
 import { getVideoComments } from "@/actions/user";
-import CommenForm from "@/components/forms/comment-form";
+import CommentForm from "@/components/forms/comment-form";
 import { useQueryData } from "@/hooks/useQueryData";
 import { VideoCommentProps } from "@/types";
 import { TabsContent } from "@radix-ui/react-tabs";
 import React from "react";
+import CommentCard from "../comment-card";
 
 type Props = {
   author: string;
@@ -18,7 +19,7 @@ const Activities = ({ author, videoId }: Props) => {
 
   return (
     <TabsContent value="Activity" className="rounded-xl flex flex-col gap-y-5">
-      <CommenForm author={author} videoId={videoId} />
+      <CommentForm author={author} videoId={videoId} />
       {comments?.map((comment) => {
         return (
           <div>
@@ -26,13 +27,13 @@ const Activities = ({ author, videoId }: Props) => {
               comment={comment.comment}
               key={comment.id}
               author={{
-                image: comment.User?.image,
-                firstName: comment.User?.firstname,
-                lastName: comment.User?.lastname,
+                image: comment.User?.image!,
+                firstname: comment.User?.firstname!,
+                lastname: comment.User?.lastname!,
               }}
               videoId = {videoId}
               reply = {comment.reply}
-              commentId = {comment.commentId}
+              commentId = {comment.commentId!}
               createdAt = {comment.createdAt}
             />
           </div>
