@@ -1,12 +1,12 @@
-'use server'
-import { client } from "@/lib/prisma"
-import { currentUser } from "@clerk/nextjs/server"
+"use server";
+import { client } from "@/lib/prisma";
+import { currentUser } from "@clerk/nextjs/server";
 
 export const onAuthenticateUser = async () => {
   try {
-    const user = await currentUser()
+    const user = await currentUser();
     if (!user) {
-      return { status: 403 }
+      return { status: 403 };
     }
 
     const userExist = await client.user.findUnique({
@@ -22,18 +22,18 @@ export const onAuthenticateUser = async () => {
           },
         },
       },
-    })
+    });
     if (userExist) {
-      return { status: 200, user: userExist }
+      return { status: 200, user: userExist };
     }
     const emailExists = await client.user.findUnique({
       where: {
         email: user.emailAddresses[0].emailAddress,
       },
-    })
+    });
 
     if (emailExists) {
-      return { status: 409, message: "Email already in use" }
+      return { status: 409, message: "Email already in use" };
     }
     const newUser = await client.user.create({
       data: {
@@ -51,7 +51,7 @@ export const onAuthenticateUser = async () => {
         workspace: {
           create: {
             name: `${user.firstName}'s Workspace`,
-            type: 'PERSONAL',
+            type: "PERSONAL",
           },
         },
       },
@@ -69,21 +69,21 @@ export const onAuthenticateUser = async () => {
           },
         },
       },
-    })
+    });
     if (newUser) {
-      return { status: 201, user: newUser }
+      return { status: 201, user: newUser };
     }
-    return { status: 400 }
+    return { status: 400 };
   } catch (error) {
-    console.log('🔴 ERROR', error)
-    return { status: 500 }
+    console.log("🔴 ERROR", error);
+    return { status: 500 };
   }
-}
+};
 
 export const getNotifications = async () => {
   try {
-    const user = await currentUser()
-    if (!user) return { status: 404 }
+    const user = await currentUser();
+    if (!user) return { status: 404 };
     const notifications = await client.user.findUnique({
       where: {
         clerkid: user.id,
@@ -96,20 +96,20 @@ export const getNotifications = async () => {
           },
         },
       },
-    })
+    });
 
     if (notifications && notifications.notification.length > 0)
-      return { status: 200, data: notifications }
-    return { status: 404, data: [] }
+      return { status: 200, data: notifications };
+    return { status: 404, data: [] };
   } catch (error) {
-    return { status: 400, data: [] }
+    return { status: 400, data: [] };
   }
-}
+};
 
 export const searchUsers = async (query: string) => {
   try {
-    const user = await currentUser()
-    if (!user) return { status: 404 }
+    const user = await currentUser();
+    if (!user) return { status: 404 };
 
     const users = await client.user.findMany({
       where: {
@@ -132,57 +132,52 @@ export const searchUsers = async (query: string) => {
         image: true,
         email: true,
       },
-    })
+    });
 
     if (users && users.length > 0) {
-      return { status: 200, data: users }
+      return { status: 200, data: users };
     }
 
-    return { status: 404, data: undefined }
+    return { status: 404, data: undefined };
   } catch (error) {
-    return { status: 500, data: undefined }
+    return { status: 500, data: undefined };
   }
-}
+};
 
-
-export const enableFirstView = async(state :boolean) => {
+export const enableFirstView = async (state: boolean) => {
   try {
     const user = await currentUser();
-    if(!user) return {status : 400}
+    if (!user) return { status: 400 };
     const view = await client.user.update({
-      where : {
-        clerkid: user.id
-      } , 
-      data : {
-        firstView : state
-      }
-    })
-    if(view) return {status : 400 , data : 'Settings Updated'}
-
+      where: {
+        clerkid: user.id,
+      },
+      data: {
+        firstView: state,
+      },
+    });
+    if (view) return { status: 400, data: "Settings Updated" };
   } catch (error) {
-      return {status : 400}
+    return { status: 400 };
   }
-}
+};
 
-export const getFirstView = async() => {
+export const getFirstView = async () => {
   try {
     const user = await currentUser();
-    if(!user) return {status : 400}
-    const userData  = await client.user.findUnique( {
-      where : {
-        clerkid : user.id
+    if (!user) return { status: 400 };
+    const userData = await client.user.findUnique({
+      where: {
+        clerkid: user.id,
       },
-      select : {
-        firstView: true
-      }
-    })
+      select: {
+        firstView: true,
+      },
+    });
 
-    if (userData ) return { status : 200 , data : userData.firstView}
-  } catch (error) {
-    
-  }
-}
-
+    if (userData) return { status: 200, data: userData.firstView };
+  } catch (error) {}
+};
 
 export const getVideoComments = async (Id: string) => {
   try {
@@ -199,9 +194,74 @@ export const getVideoComments = async (Id: string) => {
         },
         User: true,
       },
-    })
+    });
 
-    return { status: 200, data: comments }
+    return { status: 200, data: comments };
+  } catch (error) {
+    return { status: 400 };
+  }
+};
+
+export const getUserProfile = async () => {
+  try {
+    const user = await currentUser();
+    if (!user) return { status: 404 };
+    const profileIdAndImage = await client.user.findUnique({
+      where: {
+        clerkid: user.id,
+      },
+      select: {
+        image: true,
+        id: true,
+      },
+    });
+    if (profileIdAndImage) return { status: 200, data: profileIdAndImage };
+  } catch (error) {
+    return { status: 400 };
+  }
+};
+
+export const createCommentAndReply = async (
+  userId: string,
+  comment: string,
+  videoId: string,
+  commentId?: string | undefined
+) => {
+  try {
+    if (commentId) {
+      const reply = await client.comment.update({
+        where: {
+          id: commentId,
+        },
+        data: {
+          reply: {
+            create: {
+              comment,
+              userId,
+              videoId,
+            },
+          },
+        },
+      })
+      if (reply) {
+        return { status: 200, data: 'Reply posted' }
+      }
+    }
+
+    const newComment = await client.video.update({
+      where: {
+        id: videoId,
+      },
+      data: {
+        Comment: {
+          create: {
+            comment,
+            userId,
+          },
+        },
+      },
+    })
+    if (newComment) return { status: 200, data: 'New comment added' }
   } catch (error) {
     return { status: 400 }
   }
