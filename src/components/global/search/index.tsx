@@ -1,24 +1,28 @@
-'use client'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Skeleton } from '@/components/ui/skeleton'
-import { useMutationData } from '@/hooks/useMutationData'
-import { useSearch } from '@/hooks/useSearch'
-import { Loader, User } from 'lucide-react'
-import React from 'react'
+"use client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useMutationData } from "@/hooks/useMutationData";
+import { useSearch } from "@/hooks/useSearch";
+import { Loader, User } from "lucide-react";
+import React from "react";
 
 type Props = {
-  workspaceId: string
-}
+  workspaceId: string;
+};
 
-const Search = ({workspaceId}: Props) => {
+const Search = ({ workspaceId }: Props) => {
   const { query, onSearchQuery, isFetching, onUsers } = useSearch(
-    'get-users',
-    'USERS'
-  )
+    "get-users",
+    "USERS"
+  );
 
-  // const {mutate , isPending} = useMutationData(['invite-member'])
+  const { mutate, isPending } = useMutationData(
+    ["invite-member"],
+    (data: { recieverId: string; email: string }) =>
+      inviteMembers(workspaceId, data.recieverId, data.email)
+  );
   return (
     <div className="flex flex-col gap-y-5">
       <Input
@@ -59,9 +63,9 @@ const Search = ({workspaceId}: Props) => {
               <div className="flex-1 flex justify-end items-center">
                 <Button
                   // onClick={() =>
-                    // mutate({ recieverId: user.id, email: user.email })
+                  // mutate({ recieverId: user.id, email: user.email })
                   // }
-                  variant={'default'}
+                  variant={"default"}
                   className="w-5/12 font-bold"
                 >
                   <Loader
@@ -77,7 +81,7 @@ const Search = ({workspaceId}: Props) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Search
+export default Search;
