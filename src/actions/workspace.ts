@@ -1,6 +1,7 @@
 "use server";
 import { client } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
+import { sendEmail } from "./user";
 
 export const verifyAccessToWorkspace = async (workspaceId: string) => {
   try {
@@ -246,9 +247,9 @@ export const createFolder = async (workspaceId: string) => {
 
 export const getFolderInfo = async (folderId: string) => {
   try {
-    const folder  = await client.folder.findUnique({
-      where : {
-        id : folderId
+    const folder = await client.folder.findUnique({
+      where: {
+        id: folderId,
       },
       select: {
         name: true,
@@ -258,26 +259,25 @@ export const getFolderInfo = async (folderId: string) => {
           },
         },
       },
-    })
+    });
 
-    if(folder) {
+    if (folder) {
       return {
-        status : 200, 
-        data : folder
-      }
+        status: 200,
+        data: folder,
+      };
     }
     return {
       status: 400,
       data: null,
-    }
-  } catch(error) {
+    };
+  } catch (error) {
     return {
-      status : 500,
-    data : null
+      status: 500,
+      data: null,
+    };
   }
-    }
 };
-
 
 export const moveVideoLocation = async (
   videoId: string,
@@ -293,19 +293,18 @@ export const moveVideoLocation = async (
         folderId: folderId || null,
         workSpaceId,
       },
-    })
-    if (location) return { status: 200, data: 'folder changed successfully' }
-    return { status: 404, data: 'workspace/folder not found' }
+    });
+    if (location) return { status: 200, data: "folder changed successfully" };
+    return { status: 404, data: "workspace/folder not found" };
   } catch (error) {
-    return { status: 500, data: 'Oops! something went wrong' }
+    return { status: 500, data: "Oops! something went wrong" };
   }
-}
-
+};
 
 export const getPreviewVideo = async (videoId: string) => {
   try {
-    const user = await currentUser()
-    if (!user) return { status: 404 }
+    const user = await currentUser();
+    if (!user) return { status: 404 };
     const video = await client.video.findUnique({
       where: {
         id: videoId,
@@ -333,51 +332,180 @@ export const getPreviewVideo = async (videoId: string) => {
           },
         },
       },
-    })
+    });
     if (video) {
       return {
         status: 200,
         data: video,
         author: user.id === video.User?.clerkid ? true : false,
-      }
+      };
     }
 
-    return { status: 404 }
+    return { status: 404 };
   } catch (error) {
-    return { status: 400 }
+    return { status: 400 };
   }
-}
+};
 
-
-export const getPaymentInfo =async () => {
-  try{
-    const user = await currentUser() ;
-    if(!user) return {status : 404} 
+export const getPaymentInfo = async () => {
+  try {
+    const user = await currentUser();
+    if (!user) return { status: 404 };
     const payment = await client.user.findUnique({
-      where : {
-        id  : user.id
+      where: {
+        id: user.id,
       },
-      select : {
-        subscription : {
-          select : {
-            plan : true
+      select: {
+        subscription: {
+          select: {
+            plan: true,
+          },
+        },
+      },
+    });
+    if (payment) {
+      return {
+        data: payment,
+        status: 200,
+      };
+    } else {
+      return {
+        status: 404,
+      };
+    }
+  } catch {
+    return { status: 400 };
+  }
+};
+
+export const sendEmailForFirstView = async (videoId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    const firstViewSettings = await client.user.findUnique({
+      where: { clerkid: user.id },
+      select: {
+        firstView: true,
+      },
+    })
+    if (!firstViewSettings?.firstView) return
+
+    const video = await client.video.findUnique({
+      where: {
+        id: videoId,
+      },
+      select: {
+        title: true,
+        views: true,
+        User: {
+          select: {
+            email: true,
+          },
+        },
+      },
+    })
+    if (video && video.views === 0) {
+      await client.video.update({
+        where: {
+          id: videoId,
+        },
+        data: {
+          views: video.views + 1,
+        },
+      })
+
+      const { transporter, mailOptions } = await sendEmail(
+        video.User?.email!,
+        'You got a viewer',
+        `Your video ${video.title} just got its first viewer`
+      )
+
+      transporter.sendMail(mailOptions, async (error, info) => {
+        if (error) {
+          console.log(error.message)
+        } else {
+          const notification = await client.user.update({
+            where: { clerkid: user.id },
+            data: {
+              notification: {
+                create: {
+                  content: mailOptions.text,
+                },
+              },
+            },
+          })
+          if (notification) {
+            return { status: 200 }
           }
         }
-      }
-    })
-    if(payment)  {
-      return  {
-        data : payment,
-        status : 200
-      }
+      })
     }
-    else {
-      return {
-        status : 404
-      }
-    }
+  } catch (error) {
+    console.log(error)
   }
-  catch {
-    return { status: 400 }
+}export const sendEmailForFirstView = async (videoId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    const firstViewSettings = await client.user.findUnique({
+      where: { clerkid: user.id },
+      select: {
+        firstView: true,
+      },
+    })
+    if (!firstViewSettings?.firstView) return
+
+    const video = await client.video.findUnique({
+      where: {
+        id: videoId,
+      },
+      select: {
+        title: true,
+        views: true,
+        User: {
+          select: {
+            email: true,
+          },
+        },
+      },
+    })
+    if (video && video.views === 0) {
+      await client.video.update({
+        where: {
+          id: videoId,
+        },
+        data: {
+          views: video.views + 1,
+        },
+      })
+
+      const { transporter, mailOptions } = await sendEmail(
+        video.User?.email!,
+        'You got a viewer',
+        `Your video ${video.title} just got its first viewer`
+      )
+
+      transporter.sendMail(mailOptions, async (error, info) => {
+        if (error) {
+          console.log(error.message)
+        } else {
+          const notification = await client.user.update({
+            where: { clerkid: user.id },
+            data: {
+              notification: {
+                create: {
+                  content: mailOptions.text,
+                },
+              },
+            },
+          })
+          if (notification) {
+            return { status: 200 }
+          }
+        }
+      })
+    }
+  } catch (error) {
+    console.log(error)
   }
 }
