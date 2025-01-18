@@ -19,6 +19,7 @@ import InfoBar from '../info-bar'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import GlobalCard from '../global-card'
 import { Button } from '@/components/ui/button'
+import PaymentButton from '../payment-button'
 
 type Props = {
    activeWorkspaceId : string
@@ -181,13 +182,13 @@ const Sidebar = ({activeWorkspaceId}: Props) => {
         </ul>
       </nav>
       <Separator className="w-4/5" />
-      {/* {workspace.subscription?.plan === 'FREE' && (
+      {workspace.subscription?.plan === 'FREE' && (
         <GlobalCard
           title="Upgrade to Pro"
           description=" Unlock AI features like transcription, AI summary, and more."
-          // footer={<PaymentButton />}
+          footer={<PaymentButton />}
         />
-      )} */}
+      )}
     </div>
   )
   return (

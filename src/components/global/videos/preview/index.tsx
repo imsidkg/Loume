@@ -1,4 +1,4 @@
-import { getPreviewVideo } from "@/actions/workspace";
+import { getPreviewVideo, sendEmailForFirstView } from "@/actions/workspace";
 import { useQueryData } from "@/hooks/useQueryData";
 import { VideoProps } from "@/types";
 import { Download } from "lucide-react";
@@ -26,6 +26,9 @@ const VideoPreview = ({ videoId }: Props) => {
     status,
     author,
   } = (data ?? { status: 404, author: false, video: [] }) as VideoProps;
+
+  const notifyFirstView = async () => await sendEmailForFirstView(videoId);
+  
 
   if(status !== 200) router.push("/")
 
