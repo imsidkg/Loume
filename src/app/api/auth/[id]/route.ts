@@ -1,6 +1,5 @@
 import { client } from "@/lib/prisma";
 import { createClerkClient } from "@clerk/nextjs/server";
-import { clerkClient } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GEt(
@@ -8,6 +7,7 @@ export async function GEt(
   { params: { id } }: { params: { id: string } }
 ) {
   try {
+    console.log('Endpoint hit')
     const clerkClient = createClerkClient({
       secretKey: process.env.CLERK_SECRET_KEY,
     });
